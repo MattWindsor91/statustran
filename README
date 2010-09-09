@@ -1,0 +1,65 @@
+--== statustran ==--
+
+statustran is a largely proof-of-concept translator for Hurd-based GNU 
+distributions, using a curl backend to publish the contents of any 
+140-character-or-fewer file copied into its node to a given StatusNet 
+account (by default, identi.ca)
+
+statustran is heavily based on the FSF's example code for trivfs 
+translators.
+
+
+-- Requirements --
+
+For now, statustran requires:
+
+>> Intel x86.
+
+>> GNU Hurd on Mach microkernel.
+
+>> curl.  The path of curl is hardcoded into main.c and will need 
+   changing if curl is not in /bin.
+
+>> An account on a StatusNet microblog.  identi.ca's URL is 
+   hardcoded into the program by default, but you are free to 
+   change this.
+
+
+-- Compilation --
+
+A simple Makefile has been provided that should be sufficient. 
+Just run make.
+
+
+-- Usage --
+
+Use settrans to start the translator, passing --userauth=USERNAME:PASSWORD 
+while doing so.  See Hurd documentation for how to use settrans, though the 
+following:
+
+  settrans -fgap node statustran --userauth=USERNAME:PASSWORD
+
+should work.
+
+Then, you may use the translator node as a writable file:
+
+  echo "Status" > node
+
+
+-- Known issues --
+
+1) statustran reacts violently to large inputs.
+
+2) curl's output tends to clog up terminals.
+
+3) It just isn't very good or useful at all. >=P
+
+
+-- Why curl is needed (as opposed to libcurl) --
+
+Incompatibilities in the threading department (libcurl uses pthreads, the 
+Hurd uses cthreads) cause both to fail to work together in a translator 
+context.
+
+If anyone knows of a HTTP library that uses cthreads, or no threads, 
+please let me know at hayashi .:at:. archhurd .:dot:. org.
